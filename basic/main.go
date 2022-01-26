@@ -4,21 +4,13 @@ import (
 	. "juggle/basic/dao"
 	"juggle/basic/middleware"
 	_ "juggle/basic/validator"
-	"log"
+
+	_ "juggle/basic/db"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func main() {
-
-	dsn := "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("database connect error: %s", err.Error())
-	}
-
 	router := gin.Default()
 
 	// version 1

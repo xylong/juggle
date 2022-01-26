@@ -1,15 +1,24 @@
 package model
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 // User 用户
 type User struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name" binding:"required"`
-	NickName string `json:"nick_name" binding:"required,nefield=Name"`
-	Password string `json:"password" binding:"required"`
-	Birthday string `json:"birthday" binding:"omitempty,birthday"`
-	Gender   int    `json:"gender" binding:"omitempty,min=0,max=1"`
-	Phone    string `json:"phone"`
-	Email    string `json:"email" binding:"omitempty,email"`
+	ID        uint   `gorm:"primaryKey;autoIncrement;" json:"id"`
+	Name      string `gorm:"type:varchar(10);comment:名称" json:"name" binding:"required"`
+	Nickname  string `gorm:"type:varchar(20);comment:昵称" json:"nickname" binding:"required,nefield=Name"`
+	Password  string `gorm:"type:varchar(32);comment:密码" json:"password" binding:"required"`
+	Birthday  string `gorm:"type:date;comment:出生日期" json:"birthday" binding:"omitempty,birthday"`
+	Gender    int    `gorm:"type:tinyint(1);comment:0女 1男" json:"gender" binding:"omitempty,min=0,max=1"`
+	Phone     string `gorm:"type:char(13);uniqueIndex;comment:手机号" json:"phone"`
+	Email     string `gorm:"type:varchar(30);uniqueIndex;comment:邮箱" json:"email" binding:"omitempty,email"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type Users struct {
@@ -17,7 +26,7 @@ type Users struct {
 	Size int    `json:"size"`
 }
 
-func NewUser(ID int, name string) *User {
+func NewUser(ID uint, name string) *User {
 	return &User{ID: ID, Name: name}
 }
 

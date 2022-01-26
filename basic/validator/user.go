@@ -1,10 +1,11 @@
 package validator
 
 import (
-	"github.com/go-playground/validator/v10"
 	"juggle/basic/model"
 	"log"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 func init() {

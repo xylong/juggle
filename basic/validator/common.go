@@ -1,9 +1,10 @@
 package validator
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
-	"log"
 )
 
 var v *validator.Validate
