@@ -18,6 +18,8 @@ func UserList(ctx *gin.Context)  {
 		return
 	}
 
+	
+
 	ctx.JSON(http.StatusOK,gin.H{
 		"code":0,
 		"msg":"",
