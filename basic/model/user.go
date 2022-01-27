@@ -8,16 +8,16 @@ import (
 
 // User 用户
 type User struct {
-	ID        uint   `gorm:"primaryKey;autoIncrement;" json:"id"`
-	Name      string `gorm:"type:varchar(10);comment:名称" json:"name" binding:"required"`
-	Nickname  string `gorm:"type:varchar(20);comment:昵称" json:"nickname" binding:"required,nefield=Name"`
-	Password  string `gorm:"type:varchar(32);not null;comment:密码" json:"password" binding:"required"`
-	Birthday  string `gorm:"type:date;comment:出生日期" json:"birthday" binding:"omitempty,birthday"`
-	Gender    int    `gorm:"type:tinyint(1);comment:0女 1男" json:"gender" binding:"omitempty,min=0,max=1"`
-	Phone     string `gorm:"type:char(11);not null;uniqueIndex;comment:手机号" json:"phone" binding:"required"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID        uint           `gorm:"primaryKey;autoIncrement;" json:"id"`
+	Name      string         `gorm:"type:varchar(10);comment:名称" json:"name" binding:"required"`
+	Nickname  string         `gorm:"type:varchar(20);comment:昵称" json:"nickname" binding:"required,nefield=Name"`
+	Password  string         `gorm:"type:varchar(32);not null;comment:密码" json:"password" binding:"required"`
+	Birthday  string         `gorm:"type:date;comment:出生日期" json:"birthday" binding:"omitempty,birthday"`
+	Gender    int            `gorm:"type:tinyint(1);comment:0女 1男" json:"gender" binding:"omitempty,min=0,max=1"`
+	Phone     string         `gorm:"type:char(11);not null;uniqueIndex;comment:手机号" json:"phone" binding:"required"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index;->:false;"`
 }
 
 type Users struct {

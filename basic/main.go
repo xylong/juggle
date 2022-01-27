@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	. "juggle/basic/dao"
+	"juggle/basic/db"
+	"juggle/basic/lib"
 	"juggle/basic/middleware"
 	_ "juggle/basic/validator"
-
-	_ "juggle/basic/db"
+	"log"
+	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,5 +31,28 @@ func main() {
 		}
 	}
 
-	router.Run()
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatalln("服务器启动失败")
+		}
+	}()
+
+	go func() {
+		db.Init()
+	}()
+
+	lib.ServerNotify()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalln(err)
+	} else {
+		log.Println("服务器退出")
+	}
 }

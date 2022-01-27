@@ -29,10 +29,23 @@ func UserList(ctx *gin.Context) {
 
 func UserShow(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	user := &model.User{}
+	result := db.DB().Select("id", "name", "nickname", "birthday", "gender", "phone").First(user, id)
+
+	if result.Error != nil || result.RowsAffected == 0 {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 10003,
+			"msg":  "用户不存在",
+			"data": nil,
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "",
-		"data": model.NewUser(uint(id), "张三"),
+		"data": user,
 	})
 }
 
