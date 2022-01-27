@@ -46,13 +46,20 @@ func UserStore(ctx *gin.Context) {
 		return
 	}
 
-	if db.DB().Create(user).RowsAffected > 0 {
+	result := db.DB().Create(user)
+	if result.Error != nil || result.RowsAffected == 0 {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"msg":  "",
-			"data": user.ID,
+			"code": 10002,
+			"msg":  result.Error.Error(),
+			"data": nil,
 		})
+		return
 	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "",
+		"data": user.ID,
+	})
 }
 
 func UserBatchStore(ctx *gin.Context) {
