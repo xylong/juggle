@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	. "juggle/basic/dao"
-	"juggle/basic/db"
-	"juggle/basic/lib"
-	"juggle/basic/middleware"
-	_ "juggle/basic/validator"
+	. "juggle/basic/src/dao"
+	"juggle/basic/src/db"
+	"juggle/basic/src/lib"
+	"juggle/basic/src/middleware"
+	_ "juggle/basic/src/validator"
 	"log"
 	"net/http"
 	"time"
@@ -36,12 +36,14 @@ func main() {
 		Handler: router,
 	}
 
+	// *启动http服务
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
-			log.Fatalln("服务器启动失败")
+			log.Printf("start server error:%s\n", err.Error())
 		}
 	}()
 
+	// 初始化数据库
 	go func() {
 		db.Init()
 	}()
@@ -51,8 +53,8 @@ func main() {
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalln(err)
-	} else {
-		log.Println("服务器退出")
+		log.Fatalln(err.Error())
 	}
+
+	log.Println("server exit")
 }

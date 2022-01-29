@@ -13,12 +13,14 @@ func init() {
 	ServerSignalChan = make(chan os.Signal)
 }
 
+// ServerNotify 监听信号 
 func ServerNotify() {
 	signal.Notify(ServerSignalChan, os.Interrupt)
 	<-ServerSignalChan
 }
 
+// ShutDown 关闭服务
 func ShutDown(err error) {
+	log.Printf("database connect: %s\n", err.Error())
 	ServerSignalChan <- os.Interrupt
-	log.Printf("database connect: %s", err.Error())
 }

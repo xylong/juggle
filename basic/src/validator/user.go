@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"juggle/basic/model"
+	"juggle/basic/src/model"
 	"log"
 	"time"
 

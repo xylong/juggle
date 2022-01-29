@@ -1,8 +1,8 @@
 package db
 
 import (
-	"juggle/basic/lib"
-	"juggle/basic/model"
+	"juggle/basic/src/lib"
+	"juggle/basic/src/model"
 	"log"
 	"os"
 	"time"
@@ -12,11 +12,14 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var (
+	db  *gorm.DB
+	err error
+)
 
 func Init() {
-	var err error
-	dsn := "root:root@tcp(127.0.0.1:3306)/gin?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123456@tcp(127.0.0.1:3306)/gin?charset=utf8mb4&parseTime=True&loc=Local"
+
 	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -32,13 +35,18 @@ func Init() {
 		return
 	}
 
-	sqlDB, err := db.DB()
+	sqlDB, _ := db.DB()
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	if err := db.AutoMigrate(&model.User{}); err != nil {
-		log.Fatalf("database migrate error: %s", err.Error())
+	migrate()
+}
+
+func migrate()  {
+	err = db.AutoMigrate(&model.User{})
+	if err != nil {
+		log.Printf("database migrate error: %s\n", err.Error())
 	}
 }
 

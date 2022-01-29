@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"juggle/basic/db"
-	"juggle/basic/model"
+	"juggle/basic/src/db"
+	"juggle/basic/src/model"
 	"net/http"
 	"strconv"
 
