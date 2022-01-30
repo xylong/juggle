@@ -9,12 +9,26 @@ import (
 	_ "juggle/basic/src/validator"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	path, _ := os.Getwd()
+
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(path)
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	viper.Unmarshal(lib.Config)
+
 	router := gin.Default()
 
 	// version 1

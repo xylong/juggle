@@ -1,19 +1,26 @@
 package lib
 
 import (
+	"juggle/basic/src/config"
 	"log"
 	"os"
 	"os/signal"
 )
 
-// ServerSignalChan 信号
-var ServerSignalChan chan os.Signal
+var (
+	// ServerSignalChan 信号
+	ServerSignalChan chan os.Signal
+
+	// 配置
+	Config *config.Config
+)
 
 func init() {
 	ServerSignalChan = make(chan os.Signal)
+	Config = &config.Config{}
 }
 
-// ServerNotify 监听信号 
+// ServerNotify 监听信号
 func ServerNotify() {
 	signal.Notify(ServerSignalChan, os.Interrupt)
 	<-ServerSignalChan

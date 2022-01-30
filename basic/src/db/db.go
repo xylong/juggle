@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"juggle/basic/src/lib"
 	"juggle/basic/src/model"
 	"log"
@@ -18,7 +19,13 @@ var (
 )
 
 func Init() {
-	dsn := "root:123456@tcp(127.0.0.1:3306)/gin?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		lib.Config.Mysql.User,
+		lib.Config.Mysql.Password,
+		lib.Config.Mysql.Host,
+		lib.Config.Mysql.Port,
+		lib.Config.Mysql.Database,
+	)
 
 	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.New(
@@ -43,7 +50,7 @@ func Init() {
 	migrate()
 }
 
-func migrate()  {
+func migrate() {
 	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		log.Printf("database migrate error: %s\n", err.Error())
