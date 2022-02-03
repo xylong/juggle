@@ -41,6 +41,7 @@ func main() {
 		{
 			v1.POST("users", UserStore)
 			v1.POST("batch-users", UserBatchStore)
+			v1.PUT("users/:id", UserUpdate)
 			v1.DELETE("users/:id", UserDestroy)
 		}
 	}
@@ -60,6 +61,10 @@ func main() {
 	// 初始化数据库
 	go func() {
 		db.Init()
+	}()
+
+	go func() {
+		db.InitRedis()
 	}()
 
 	lib.ServerNotify()

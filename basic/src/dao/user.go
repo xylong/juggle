@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 )
 
 func UserList(ctx *gin.Context) {
@@ -93,7 +94,13 @@ func UserBatchStore(ctx *gin.Context) {
 }
 
 func UserUpdate(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "update")
+	conn := db.RedisPool.Get()
+	res, err := redis.String(conn.Do("get", "name"))
+	if err != nil {
+		ctx.String(http.StatusOK, err.Error())
+	} else {
+		ctx.String(http.StatusOK, res)
+	}
 }
 
 func UserDestroy(ctx *gin.Context) {
