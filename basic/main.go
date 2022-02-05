@@ -6,6 +6,7 @@ import (
 	"juggle/basic/src/db"
 	"juggle/basic/src/lib"
 	"juggle/basic/src/middleware"
+	"juggle/basic/src/model"
 	_ "juggle/basic/src/validator"
 	"log"
 	"net/http"
@@ -35,7 +36,7 @@ func main() {
 	v1 := router.Group("v1")
 	{
 		v1.GET("users", UserList)
-		v1.GET("users/:id", UserShow)
+		v1.GET("users/:id", db.Cache(UserShow, "id", "user:%s", model.User{}))
 
 		v1.Use(middleware.IsLogin())
 		{

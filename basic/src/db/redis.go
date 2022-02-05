@@ -1,10 +1,14 @@
 package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"juggle/basic/src/lib"
+	"log"
+	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -35,4 +39,33 @@ func newPool(addr string) *redis.Pool {
 
 func InitRedis() {
 	RedisPool = newPool(fmt.Sprintf("%s:%d", lib.Config.Redis.Host, lib.Config.Redis.Port))
+}
+
+// Cache 缓存
+func Cache(f gin.HandlerFunc, param, key string, empty interface{}) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param(param)
+		key := fmt.Sprintf(key, id)
+		conn := RedisPool.Get()
+		defer conn.Close()
+
+		// 从redis取数据
+		res, err := redis.Bytes(conn.Do("get", key))
+		if err != nil && err == redis.ErrNil {
+			f(c)
+			result, exists := c.Get("result")
+			if !exists {
+				result = empty
+			}
+			data, _ := json.Marshal(result)
+			_, err = conn.Do("setex", key, 30, data)
+			if err != nil {
+				log.Println(err)
+			}
+			c.JSON(http.StatusOK, result)
+		} else {
+			json.Unmarshal(res, &empty)
+			c.JSON(http.StatusOK, empty)
+		}
+	}
 }
